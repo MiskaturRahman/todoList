@@ -61,8 +61,9 @@
 
     </div>
 
-    <div style="margin-left:42%; margin-top:20px; padding:40px; float: left; border: 1px solid white" id="update">
-
+    <div style="margin-left:42%; margin-top:20px; padding:40px; float: left; background-color:goldenrod; box-shadow: 5px 5px 10px gray;"
+        id="update">
+        UPDATE TASK
     </div>
 
 
@@ -73,12 +74,13 @@
                 .then(tasks => {
                     console.log(tasks);
                     const container = document.getElementById('tasks');
+                    container.innerHTML = '';
                     tasks.forEach(task => {
                         const p = document.createElement('p');
                         p.innerHTML =
                             `<b>**${task.task}</b>-- time: ${task.time}, date: ${task.date}
                         <button onclick="loadTask('${task._id}')" class="btn btn-primary">update</button>
-                        <button onclick="deleteTask('${task._id}')"  class="btn btn-danger")>delete</button>
+                        <button onclick="deleteTask(event, '${task._id}')"  class="btn btn-danger")>delete</button>
                     `;
                         container.appendChild(p);
                     })
@@ -102,14 +104,40 @@
                 })
         }
 
+        function updateTask(id) {
+            const time = document.getElementById('time').value;
+            const date = document.getElementById('date').value;
+            const todo = {
+                id,
+                time,
+                date
+            };
+            fetch(`/update/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(todo)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result) {
+                        loadAllTasks();
+                        document.getElementById('update').innerHTML = '';
+                    }
+                })
+        }
 
-        function deleteTask(id) {
+
+        function deleteTask(event, id) {
             fetch(`/delete/${id}`, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
                 .then(result => {
-                    console.log('deleted successfully')
+                    if (result) {
+                        event.target.parentNode.style.display = 'none';
+                    }
                 })
         }
     </script>

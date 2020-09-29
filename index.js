@@ -41,18 +41,28 @@ client.connect(err => {
     })
 
 
-    //CRUD OPERATION STEP 3 -- DELETE
-    app.delete('/delete/:id', (req, res) => {
-        taskList.deleteOne({ _id: ObjectId(req.params.id) })
-            .then((result) => {
-                console.log(result);
+    //CRUD OPERATION STEP 3 -- UPDATE
+    app.patch('/update/:id', (req, res) => {
+        taskList.updateOne({ _id: ObjectId(req.params.id) },
+            {
+                $set: { time: req.body.time, date: req.body.date }
             })
+            .then(result => {
+                res.send(result.modifiedCount > 0);
+            })
+
     })
 
 
 
-
-});
+    //CRUD OPERATION STEP 4 -- DELETE
+    app.delete('/delete/:id', (req, res) => {
+        taskList.deleteOne({ _id: ObjectId(req.params.id) })
+            .then((result) => {
+                res.send(result.deletedCount > 0);
+            })
+    })
+})
 
 
 app.get('/', (req, res) => {
