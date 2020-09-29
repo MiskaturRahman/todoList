@@ -3,6 +3,7 @@ const app = express();
 const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 const password = 'BZcPMegVezKdsIpo';
+const ObjectId = require('mongodb').ObjectId;
 
 const uri = "mongodb+srv://mangoUser:BZcPMegVezKdsIpo@cluster0.yih8d.mongodb.net/todolistdb?retryWrites=true&w=majority";
 
@@ -22,6 +23,12 @@ client.connect(err => {
             })
     })
 
+    app.get('/task/:id', (req, res) => {
+        taskList.find({ _id: ObjectId(req.params.id) })
+            .toArray((err, tasks) => {
+                res.send(tasks[0]);
+            })
+    })
 
     //CRUD OPERATION STEP 1 -- CREATE
     app.post("/addTask", (req, res) => {
@@ -30,6 +37,15 @@ client.connect(err => {
             .then(result => {
                 console.log('data added successfully');
                 res.redirect('/');
+            })
+    })
+
+
+    //CRUD OPERATION STEP 3 -- DELETE
+    app.delete('/delete/:id', (req, res) => {
+        taskList.deleteOne({ _id: ObjectId(req.params.id) })
+            .then((result) => {
+                console.log(result);
             })
     })
 

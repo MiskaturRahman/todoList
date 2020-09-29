@@ -31,6 +31,7 @@
         }
 
         #tasks {
+            text-align: center;
             margin-top: 50px;
             margin-right: 20px;
             border-radius: 10px;
@@ -45,7 +46,7 @@
 
 </head>
 
-<body style="display:flex;">
+<body>
     <h1 style="text-align:center;">TODO LIST</h1>
     <div class="container submit-area">
         <form action="/addTask" method="post">
@@ -56,23 +57,61 @@
         </form>
     </div>
 
-    <div id="tasks">
+    <div style="margin-left:25%;" id="tasks">
+
+    </div>
+
+    <div style="margin-left:42%; margin-top:20px; padding:40px; float: left; border: 1px solid white" id="update">
 
     </div>
 
 
     <script>
-        fetch('/tasks')
-            .then(response => response.json())
-            .then(tasks => {
-                console.log(tasks);
-                const container = document.getElementById('tasks');
-                tasks.forEach(task => {
-                    const p = document.createElement('p');
-                    p.innerHTML = `<b>**${task.task}</b>`;
-                    container.appendChild(p);
+        function loadAllTasks() {
+            fetch('/tasks')
+                .then(response => response.json())
+                .then(tasks => {
+                    console.log(tasks);
+                    const container = document.getElementById('tasks');
+                    tasks.forEach(task => {
+                        const p = document.createElement('p');
+                        p.innerHTML =
+                            `<b>**${task.task}</b>-- time: ${task.time}, date: ${task.date}
+                        <button onclick="loadTask('${task._id}')" class="btn btn-primary">update</button>
+                        <button onclick="deleteTask('${task._id}')"  class="btn btn-danger")>delete</button>
+                    `;
+                        container.appendChild(p);
+                    })
                 })
-            })
+        }
+        loadAllTasks();
+
+        function loadTask(id) {
+            fetch(`task/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    const update = document.getElementById('update');
+                    update.innerHTML = `
+                    <h3>UPDATE TASK</h3>
+                    <br>
+                    TIME: <input style="width:150px; margin: 5px" type="text" class="form-control" value="${data.time}" id="time">
+                    <br>
+                    DATE: <input style="width:150px; margin: 10px; padding:10px;"  type="text" class="form-control" value="${data.date}" id="date">
+                    <button style="margin:10px;" onclick="updateTask('${data._id}')" class="btn btn-success">submit</button>
+                    `;
+                })
+        }
+
+
+        function deleteTask(id) {
+            fetch(`/delete/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log('deleted successfully')
+                })
+        }
     </script>
 </body>
 
