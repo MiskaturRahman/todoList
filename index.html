@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TASK</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+
+    <style>
+        body {
+            background-color: powderblue;
+            text-align: center;
+        }
+
+        h1 {
+            color: rgb(58, 25, 70);
+            margin-top: 20px;
+
+        }
+
+        .submit-area {
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 10px gray;
+            padding: 40px;
+            width: 30%;
+            background-color: rgb(231, 225, 225);
+        }
+
+        #tasks {
+            margin-top: 50px;
+            margin-right: 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 10px gray;
+            padding: 20px;
+            width: 50%;
+            background-color: salmon;
+        }
+    </style>
+
+
+
+</head>
+
+<body style="display:flex;">
+    <h1 style="text-align:center;">TODO LIST</h1>
+    <div class="container submit-area">
+        <form action="/addTask" method="post">
+            <input type="text" class="form-control" placeholder="task name" name="task"><br>
+            <input type="text" class="form-control" placeholder="time" name="time"><br>
+            <input type="text" class="form-control" placeholder="date" name="date"><br>
+            <button type="submit" id="login" class="btn btn-success">Add Task</button>
+        </form>
+    </div>
+
+    <div id="tasks">
+
+    </div>
+
+
+    <script>
+        fetch('/tasks')
+            .then(response => response.json())
+            .then(tasks => {
+                console.log(tasks);
+                const container = document.getElementById('tasks');
+                tasks.forEach(task => {
+                    const p = document.createElement('p');
+                    p.innerHTML = `<b>**${task.task}</b>`;
+                    container.appendChild(p);
+                })
+            })
+    </script>
+</body>
+
+</html>
